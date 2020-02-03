@@ -27,6 +27,12 @@
 import { apiService } from "@/common/api.service.js";
 export default{
     name :"TweettyEditor",
+    props: {
+     slug: {
+        type: String,
+        required: false
+    }
+  },
     data() {
             return {
                tweety_body: null,

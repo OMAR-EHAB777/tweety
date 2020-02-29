@@ -36,7 +36,7 @@ class tweetsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = tweets
-        exclude = ["updated_at"]
+        exclude = ["updated_at","likers"]
 
     def get_created_at(self, instance):
         return instance.created_at.strftime("%B %d, %Y")

@@ -8,7 +8,6 @@ from tweets.api.permissions import IsAuthorOrReadOnly
 from tweets.api.serializers import commentsSerializer, tweetsSerializer
 from tweets.models import tweets, comments
 
-
 class TweetsViewSet(viewsets.ModelViewSet):
     """Provide CRUD +L functionality for tweets."""
     queryset = tweets.objects.all().order_by("-created_at")

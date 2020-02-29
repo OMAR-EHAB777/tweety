@@ -18,8 +18,12 @@ from django.urls import path , include , re_path
 from django_registration.backends.one_step.views import RegistrationView
 from accounts.forms import CustomUserForm
 from core.views import IndexTemplateView
+from rest_framework_swagger.views import get_swagger_view
+
+schema_view = get_swagger_view(title='documentationAPI')
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path(r'document/', schema_view),
     #custom verfitionform provide by django  registrationview
     path("accounts/register/",
          RegistrationView.as_view(

@@ -2,11 +2,12 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from tweets.api import views as qv
-
+from django.conf.urls import url
 router = DefaultRouter()
 router.register(r"tweets", qv.TweetsViewSet)
 
 urlpatterns = [
+
     path("", include(router.urls)),
     path("tweets/<slug:slug>/comments/",
          qv.commentsListAPIView.as_view(),

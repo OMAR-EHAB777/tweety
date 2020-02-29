@@ -24,9 +24,10 @@ const routes = [
     props:true
   },
     {
-    path: "/ask",
+    path: "/ask:slug?",
     name: "tweety-editor",
-    component: TwettyEditor
+    component: TwettyEditor,
+    props: true
     },
   {
     path: "/about",

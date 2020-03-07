@@ -62,12 +62,21 @@
       <hr>
     </div>
         <div class="container">
-            <comment-Component
-              v-for="(comment, index) in comments"
-              :comment="comment"
+            <commentComponent
+              v-for="(comments, index) in comments"
+              :comments="comments"
               :key="index"
             />
         </div>
+    <div class="my-4">
+        <p v-show="loadingcomments">...loading...</p>
+        <button
+          v-show="next"
+          @click="gettweetscomment"
+          class="btn btn-sm btn-outline-success"
+          >Load More
+        </button>
+      </div>
     </div>
 
 </template>
@@ -95,6 +104,8 @@ export default {
       error: null,
       userHascommenteded: false,
       showForm: false,
+      next: null,
+      loadingcomments: false,
     }
  },
  methods:{
@@ -108,21 +119,32 @@ export default {
           apiService(endpoint)
             .then(data => {
                 this.tweets = data;
+                this.userHascommenteded = data.user_has_commented;
                 this.setPageTitle(data.content)
         })
          },
         gettweetscomment(){
              let endpoint = `/api/tweets/${this.slug}/comments/`;
+               if (this.next) {
+                endpoint = this.next;
+              }
+              this.loadingcomments = true;
               apiService(endpoint)
                .then(data => {
-                  this.comments = data.results;
+                  this.comments.push(...data.results);
+                    this.loadingcomments = false;
+                      if (data.next) {
+                        this.next = data.next;
+                      } else {
+                        this.next = null;
+                      }
         })
 
         },
     onSubmit() {
       // Tell the REST API to create a new answer for this question based on the user input, then update some data properties
       if (this.newcommentbody) {
-        let endpoint = `/api/tweets/${this.slug}/comments/`;
+        let endpoint = `/api/tweets/${this.slug}/comment/`;
         apiService(endpoint, "POST", { body: this.newcommentbody })
           .then(data => {
             this.comments.unshift(data)

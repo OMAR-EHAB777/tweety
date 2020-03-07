@@ -12,7 +12,7 @@
 export default {
   name: "commentComponent",
   props: {
-    comment: {
+    comments: {
      type: Object,
      required: true
    }

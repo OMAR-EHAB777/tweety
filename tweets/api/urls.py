@@ -13,7 +13,7 @@ urlpatterns = [
          qv.commentsListAPIView.as_view(),
          name="comments-list"),
 
-    path("tweets/<slug:slug>/comments/",
+    path("tweets/<slug:slug>/comment/",
          qv.commentsCreateAPIView.as_view(),
          name="comments-create"),
     path("comments/<int:pk>/",

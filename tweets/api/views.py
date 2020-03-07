@@ -8,15 +8,7 @@ from tweets.api.permissions import IsAuthorOrReadOnly
 from tweets.api.serializers import commentsSerializer, tweetsSerializer
 from tweets.models import tweets, comments
 
-class TweetsViewSet(viewsets.ModelViewSet):
-    """Provide CRUD +L functionality for tweets."""
-    queryset = tweets.objects.all().order_by("-created_at")
-    lookup_field = "slug"
-    serializer_class = tweetsSerializer
-    permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
 
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
 
 
 class commentsCreateAPIView(generics.CreateAPIView):
@@ -26,6 +18,7 @@ class commentsCreateAPIView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
+        global tweets
         request_user = self.request.user
         kwarg_slug = self.kwargs.get("slug")
         tweets = get_object_or_404(tweets, slug=kwarg_slug)
@@ -53,6 +46,7 @@ class commentLikeAPIView(APIView):
 
     def delete(self, request, pk):
         """Remove request.user from the voters queryset of an comments instance."""
+        global comments
         comments = get_object_or_404(comments, pk=pk)
         user = request.user
 
@@ -82,3 +76,15 @@ class commentRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = comments.objects.all()
     serializer_class = commentsSerializer
     permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
+
+
+
+class TweetsViewSet(viewsets.ModelViewSet):
+    """Provide CRUD +L functionality for tweets."""
+    queryset = tweets.objects.all().order_by("-created_at")
+    lookup_field = "slug"
+    serializer_class = tweetsSerializer
+    permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)

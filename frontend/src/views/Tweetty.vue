@@ -65,7 +65,9 @@
             <commentComponent
               v-for="(comments, index) in comments"
               :comments="comments"
+              :requestUser="requestUser"
               :key="index"
+              @delete-comment="deletecomment"
             />
         </div>
     <div class="my-4">
@@ -106,13 +108,19 @@ export default {
       showForm: false,
       next: null,
       loadingcomments: false,
+      requestUser: null
     }
  },
+
  methods:{
          setPageTitle(title) {
       // set a given title string as the webpage title
               document.title = title;
             },
+          setRequestUser() {
+      // the username has been set to localStorage by the App.vue component
+          this.requestUser = window.localStorage.getItem("username");
+    },
          gettweetsData() {
       // get the details of a question instance from the REST API and call setPageTitle
           let endpoint = `/api/tweets/${ this.slug }/`;
@@ -158,11 +166,24 @@ export default {
       } else {
         this.error = "You can't send an empty answer!";
       }
+    },
+      async deletecomment(comments) {
+      // delete a given comment from the comments array and make a delete request to the REST API
+      let endpoint = `/api/comments/${comments.id}/`;
+      try {
+        await apiService(endpoint, "DELETE")
+        this.$delete(this.comments, this.comments.indexOf(comments))
+        this.userHascommented = false;
+      }
+      catch (err) {
+        console.log(err)
+      }
     }
  },
   created() {
     this.gettweetsData()
     this.gettweetscomment()
+    this.setRequestUser()
   }
 };
 </script>
